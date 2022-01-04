@@ -64,16 +64,6 @@ workspace.Client.ChildAdded:Connect(function(cube)
 
         if (library.flags.cubeMatchEnabled) then
             local box = cube:FindFirstChildWhichIsA("SelectionBox") or cube:FindFirstChildWhichIsA("SpecialMesh");
-
-            spawn(function()
-                repeat
-                    if (box:IsA("SelectionBox")) then
-                        box.Color3 = library.flags.cursorColour;
-                    else
-                        box.VertexColor = Vector3.new(library.flags.cursorColour.r, library.flags.cursorColour.g, library.flags.cursorColour.b);
-                    end;
-                    runService.RenderStepped:Wait();
-                until not table.find(cubes, cube);
             end);
         end;
     end;
