@@ -91,11 +91,6 @@ end;
 local function expectedCFrame()
     local cube, distance, originalXPos = closestCube();
 
-    if (library.flags.autoPlayerEnabled and cube) then
-        tweenService:Create(fakeCursor, TweenInfo.new(1 - (10 / (math.floor(distance * 100) / 100))), {Value = CFrame.new(camera.CFrame.p, library.flags.cameraLockEnabled and Vector3.new(0.05, cube.Position.Y, cube.Position.Z) or cube.Position)}):Play();
-        camera.CFrame = fakeCursor.Value;
-
-        return fakeCursor.Value;
     end;
     return (client:WaitForChild("MapData").Playing and ((not library.flags.autoPlayerEnabled or cube == nil) and CFrame.new(camera.CFrame.p, mouse.Hit.p)) or camera.CFrame);
 end;
@@ -298,11 +293,6 @@ trailMatch = miscSection:AddToggle({
                         local box = cube:FindFirstChildWhichIsA("SelectionBox") or cube:FindFirstChildWhichIsA("SpecialMesh");
     
                         if (box:IsA("SelectionBox")) then
-    
-                            cursorColour:SetColor(box.Color3);
-                            box.Color3 = library.flags.cursorColour;
-                        else
-                            cursorColour:SetColor(Color3.new(box.VertexColor.X, box.VertexColor.Y, box.VertexColor.Z));
                         end;
                     end;
                     runService.RenderStepped:Wait();
@@ -315,23 +305,12 @@ miscSection:AddToggle({
     text = "Trail";
     flag = "trailEnabled";
     callback = function(enabled)
-        if (enabled) then
-            uiCursor.ImageLabel.BackgroundTransparency = 0;
-            repeat
-                local clonedCursor = partCursor:Clone();
-                local trail = uiCursor:Clone();
-    
-                clonedCursor.Parent = cursorHolder;
-                trail.ImageLabel.Visible = true;
-                trail.Parent = clonedCursor;
-                trail.Adornee = nil;
             
                 for i, v in next, trail:GetChildren() do
                     if (v.Name == "ImageLabel") then
                         local trailAnim = tweenService:Create(v, TweenInfo.new(0.75, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new()});
                         tweenService:Create(v, TweenInfo.new(0.75), {BackgroundTransparency = 1}):Play();
                         trailAnim.Completed:Connect(function()
-                            clonedCursor:Destroy();
                         end);
                         trailAnim:Play();
                     end;
@@ -340,10 +319,6 @@ miscSection:AddToggle({
                 runService.Stepped:Wait();
             until not library.flags.trailEnabled;
     
-            wait(0.15);
-            uiCursor.ImageLabel.BackgroundTransparency = 1;
-            wait(0.85);
-            for i, v in next, cursorHolder:GetChildren() do
                 v:Destroy();
             end;
         end;
